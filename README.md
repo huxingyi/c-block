@@ -37,6 +37,7 @@ Features
 Warning
 =================
 - Do not use local variables. Local variables are not preserved across source lines which containing **c-block** codes. Put the variables into the context struct.
+- Do not use switch-case between c_begin and c_end. see [Duff's device](http://en.wikipedia.org/wiki/Duff%27s_device).
 
 Examples
 =================
