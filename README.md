@@ -1,3 +1,5 @@
+![c-block](https://raw.githubusercontent.com/huxingyi/c-block/master/c-block.png)
+
 Overview
 =================
 **c-block** are extremely lightweight macros designed for eliminate callback hell, inspired by [Duff's device](http://en.wikipedia.org/wiki/Duff%27s_device) and [Protothreads](http://dunkels.com/adam/pt/about.html).  **c-block** provide sequential flow of control that is similar to the **await** of c#.
