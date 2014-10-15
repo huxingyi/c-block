@@ -30,7 +30,7 @@ For full version code, see [c-block-uv](https://github.com/huxingyi/c-block-uv)
 
 Features
 =================
-- Low cost, each block use only 24 bytes (on 32bit system)  
+- Low cost, each block use only 12 bytes (on 32bit system)  
 - No dependences.  
 - Support all platforms.  
 
