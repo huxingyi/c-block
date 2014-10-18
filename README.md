@@ -21,7 +21,7 @@ int task_clousre(struct task *ctx) {
   c_begin(ctx, task_clousre);
   ctx->u.stat.loop = uv_default_loop();
   ctx->u.stat.path = "./test.exe";
-  c_call(&ctx->u.stat, c_fs_stat);
+  c_await(&ctx->u.stat, c_fs_stat);
   uv_fs_req_cleanup(&ctx->u.stat.req);
   c_end();
   free(ctx);
