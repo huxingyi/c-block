@@ -44,3 +44,4 @@ Warning
 Examples
 =================
 - [c-block-uv](https://github.com/huxingyi/c-block-uv)  
+- [c-block-mysql](https://github.com/huxingyi/c-block-mysql)  
