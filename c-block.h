@@ -18,7 +18,6 @@
 
 #include <assert.h>
 
-#define C_BLOCK_RET_UNHANDLED                -100
 #define C_BLOCK_RET_PENDING                  -101
 #define C_BLOCK_RET_FINISHED                 -102
 
@@ -28,36 +27,41 @@ struct c_block {
   int state;
 };
 
-#define c_init(_ctx) do {                               \
-    (_ctx)->block.func = 0;                             \
-    (_ctx)->block.ctx = (_ctx);                         \
-    (_ctx)->block.state = 0;                            \
-  } while (0)
-
+#ifdef c_begin
+# error "c_begin defined."
+#endif
 #define c_begin(_ctx, _func)  {                                   \
+  void *__this_ctx = (void *)(_ctx);                              \
   struct c_block *__this_block = &(_ctx)->block;                  \
   int (*__this_func)(void *) = (int (*)(void *))(_func);          \
-  switch (((struct c_block *)__this_block)->state) {              \
+  switch (__this_block->state) {                                 \
     case 0:    
 
-#define c_call(_ctx, _func) do {                        \
-    int ret;                                            \
-    assert((void *)__this_block != (void *)(_ctx));     \
-    (_ctx)->block.func = (int (*)(void *))__this_func;  \
-    (_ctx)->block.ctx = __this_block;                   \
-    (_ctx)->block.state = 0;                            \
-    assert(0 == __this_block->state);                   \
-    __this_block->state = __LINE__;                     \
-    ret = (_func)(_ctx);                                \
-    if (C_BLOCK_RET_PENDING == ret) {                   \
-      return ret;                                       \
-    } else if (C_BLOCK_RET_FINISHED == ret) {           \
-    } else {                                            \
-      assert(0 && "c_call:invalid return value");       \
-    }                                                   \
-    case __LINE__: __this_block->state = 0;             \
+#ifdef c_await
+# error "c_await defined."
+#endif
+#define c_await(_ctx, _func) do {                         \
+    int ret;                                              \
+    assert((void *)__this_ctx != (void *)(_ctx));         \
+    (_ctx)->block.func = (int (*)(void *))0;              \
+    ret = (_func)(_ctx);                                  \
+    if (C_BLOCK_RET_PENDING == ret) {                     \
+      assert(0 == __this_block->state);                   \
+      __this_block->state = __LINE__;                     \
+      (_ctx)->block.ctx = __this_ctx;                     \
+      (_ctx)->block.state = 0;                            \
+      (_ctx)->block.func = (int (*)(void *))__this_func;  \
+      return ret;                                         \
+    } else if (C_BLOCK_RET_FINISHED == ret) {             \
+    } else {                                              \
+      assert(0 && "c_await:invalid return value");        \
+    }                                                     \
+    case __LINE__: __this_block->state = 0;               \
   } while (0)
 
+#ifdef c_spawn
+# error "c_spawn defined."
+#endif
 #define c_spawn(_ctx, _func, _callback) do {            \
     int ret;                                            \
     (_ctx)->block.func = (int (*)(void *))(_callback);  \
@@ -71,29 +75,37 @@ struct c_block {
     }                                                   \
   } while (0)
 
-#define c_unhandled(_ctx)             C_BLOCK_RET_UNHANDLED
-#define c_finished(_ctx)                                               \
-   (((struct c_block *)(_ctx))->func(((struct c_block *)(_ctx))->ctx), \
+#ifdef c_finished
+# error "c_finished defined."
+#endif
+#define c_finished(_ctx)                                     \
+   ((_ctx)->block.func                                 ?     \
+    ((_ctx)->block.func((_ctx)->block.ctx),                  \
+     C_BLOCK_RET_FINISHED)                             :     \
     C_BLOCK_RET_FINISHED)
+
+#ifdef c_pending
+# error "c_pending defined."
+#endif    
 #define c_pending(_ctx)               C_BLOCK_RET_PENDING
+
+#ifdef c_end
+# error "c_end defined."
+#endif
 #define c_end()                   \
     }                             \
   }
 
-#define C_INIT          c_init
 #define C_BEGIN         c_begin
-#define C_CALL          c_call
+#define C_AWAIT         c_await
 #define C_SPAWN         c_spawn
-#define C_UNHANDLED     c_unhandled
 #define C_FINISHED      c_finished
 #define C_PENDING       c_pending
 #define C_END           c_end
 
-#define cInit           c_init
 #define cBegin          c_begin
-#define cCall           c_call
+#define cAwait          c_await
 #define cSpawn          c_spawn
-#define cUnhandled      c_unhandled
 #define cFinished       c_finished
 #define cPending        c_pending
 #define cEnd            c_end
