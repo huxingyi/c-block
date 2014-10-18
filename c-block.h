@@ -27,19 +27,13 @@ struct c_block {
   int state;
 };
 
-#ifdef c_begin
-# error "c_begin defined."
-#endif
 #define c_begin(_ctx, _func)  {                                   \
   void *__this_ctx = (void *)(_ctx);                              \
   struct c_block *__this_block = &(_ctx)->block;                  \
   int (*__this_func)(void *) = (int (*)(void *))(_func);          \
-  switch (__this_block->state) {                                 \
+  switch (__this_block->state) {                                  \
     case 0:    
 
-#ifdef c_await
-# error "c_await defined."
-#endif
 #define c_await(_ctx, _func) do {                         \
     int ret;                                              \
     assert((void *)__this_ctx != (void *)(_ctx));         \
@@ -59,9 +53,6 @@ struct c_block {
     case __LINE__: __this_block->state = 0;               \
   } while (0)
 
-#ifdef c_spawn
-# error "c_spawn defined."
-#endif
 #define c_spawn(_ctx, _func, _callback) do {            \
     int ret;                                            \
     (_ctx)->block.func = (int (*)(void *))(_callback);  \
@@ -75,18 +66,12 @@ struct c_block {
     }                                                   \
   } while (0)
 
-#ifdef c_finished
-# error "c_finished defined."
-#endif
 #define c_finished(_ctx)                                     \
    ((_ctx)->block.func                                 ?     \
     ((_ctx)->block.func((_ctx)->block.ctx),                  \
      C_BLOCK_RET_FINISHED)                             :     \
     C_BLOCK_RET_FINISHED)
 
-#ifdef c_pending
-# error "c_pending defined."
-#endif    
 #define c_pending(_ctx)               C_BLOCK_RET_PENDING
 
 #ifdef c_end
@@ -96,6 +81,9 @@ struct c_block {
     }                             \
   }
 
+#define c_async
+
+#define C_ASYNC         c_async  
 #define C_BEGIN         c_begin
 #define C_AWAIT         c_await
 #define C_SPAWN         c_spawn
@@ -103,6 +91,7 @@ struct c_block {
 #define C_PENDING       c_pending
 #define C_END           c_end
 
+#define cAsync          c_async
 #define cBegin          c_begin
 #define cAwait          c_await
 #define cSpawn          c_spawn
