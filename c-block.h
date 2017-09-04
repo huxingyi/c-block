@@ -68,8 +68,7 @@ struct c_block {
 
 #define c_finished(_ctx)                                     \
    ((_ctx)->block.func                                 ?     \
-    ((_ctx)->block.func((_ctx)->block.ctx),                  \
-     C_BLOCK_RET_FINISHED)                             :     \
+    (_ctx)->block.func((_ctx)->block.ctx)              :     \
     C_BLOCK_RET_FINISHED)
 
 #define c_pending(_ctx)               C_BLOCK_RET_PENDING
