@@ -38,12 +38,12 @@ struct c_block {
     int ret;                                              \
     assert((void *)__this_ctx != (void *)(_ctx));         \
     (_ctx)->block.func = (int (*)(void *))0;              \
+    (_ctx)->block.state = 0;                              \
     ret = (_func)(_ctx);                                  \
     if (C_BLOCK_RET_PENDING == ret) {                     \
       assert(0 == __this_block->state);                   \
       __this_block->state = __LINE__;                     \
       (_ctx)->block.ctx = __this_ctx;                     \
-      (_ctx)->block.state = 0;                            \
       (_ctx)->block.func = (int (*)(void *))__this_func;  \
       return ret;                                         \
     } else if (C_BLOCK_RET_FINISHED == ret) {             \
